@@ -3,11 +3,15 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
+import { Category } from 'src/categories/entities/category.entity';
 
-@Entity()
+@Entity({ name: 'budget' })
 export class Budget extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -33,4 +37,8 @@ export class Budget extends BaseEntity {
 
   @Column({ name: 'value', type: 'decimal', scale: 2 })
   value: number;
+
+  @ManyToOne(() => Category, (category) => category.budgets)
+  @JoinColumn()
+  category: Relation<Category>;
 }

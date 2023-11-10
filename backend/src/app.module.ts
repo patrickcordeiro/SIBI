@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BudgetModule } from './budget/budget.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BudgetModule } from './budget/budget.module';
       synchronize: true,
     }),
     BudgetModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,26 +17,38 @@ export class BudgetService {
   }
 
   findAll(): Promise<Budget[]> {
-    return this.repository.find();
+    return this.repository.find({
+      relations: {
+        category: true,
+      },
+    });
   }
 
   findOne(id: string): Promise<Budget> {
-    return this.repository.findOne({ where: { id } });
+    return this.repository.findOne({
+      where: { id },
+      relations: { category: true },
+    });
   }
 
   async update(id: string, updateBudgetDto: UpdateBudgetDto): Promise<Budget> {
     const budget = await this.repository.preload({
       id: id,
-      ...updateBudgetDto,
+      isActive: updateBudgetDto.isActive,
+      category: updateBudgetDto.category,
     });
+
     if (!budget) {
       throw new NotFoundException(`Item ${id} not found`);
     }
+
     return this.repository.save(budget);
   }
 
   async remove(id: string) {
     const budget = await this.findOne(id);
-    return this.repository.remove(budget);
+    this.repository.remove(budget);
+
+    return 'Budget deleted!';
   }
 }
