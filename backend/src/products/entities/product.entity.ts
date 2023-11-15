@@ -1,5 +1,5 @@
+import { Category } from 'src/categories/entities/category.entity';
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,32 +9,32 @@ import {
   Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import { Category } from 'src/categories/entities/category.entity';
 
-export enum BudgetType {
-  RECEITA = 'Receita',
-  DESPESA = 'Despesa',
-}
-
-@Entity({ name: 'budget' })
-export class Budget extends BaseEntity {
+@Entity({ name: 'product' })
+export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'name', type: 'varchar', default: '' })
+  @Column({ name: 'name', type: 'varchar' })
   name: string;
 
-  @Column({ name: 'description', type: 'varchar', length: 50 })
+  @Column({ name: 'description', type: 'varchar', length: 100, default: '' })
   description: string;
 
-  @Column({ name: 'value', type: 'decimal', scale: 2 })
-  value: number;
-
   @Column({
-    type: 'enum',
-    enum: BudgetType,
+    name: 'price',
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0.0,
   })
-  type: BudgetType;
+  price: number;
+
+  @Column({ name: 'quantity', type: 'int' })
+  quantity: number;
+
+  @Column({ name: 'photo_url', type: 'varchar' })
+  photoUrl: string;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -52,7 +52,7 @@ export class Budget extends BaseEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive: boolean;
 
-  @ManyToOne(() => Category, (category) => category.budgets)
+  @ManyToOne(() => Category, (category) => category.products)
   @JoinColumn({ name: 'id_category' })
   category: Relation<Category>;
 }
