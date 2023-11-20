@@ -8,36 +8,62 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class BudgetService {
   constructor(
-    @InjectRepository(Budget) private readonly repository: Repository<Budget>,
+    @InjectRepository(Budget)
+    private readonly budgetRepository: Repository<Budget>,
   ) {}
 
   create(createBudgetDto: CreateBudgetDto): Promise<Budget> {
-    const budget = this.repository.create(createBudgetDto);
-    return this.repository.save(budget);
+    const budget = this.budgetRepository.create(createBudgetDto);
+    return this.budgetRepository.save(budget);
   }
 
   findAll(): Promise<Budget[]> {
-    return this.repository.find();
+    return this.budgetRepository.find({
+      relations: {
+        category: true,
+      },
+    });
   }
 
   findOne(id: string): Promise<Budget> {
-    return this.repository.findOne({ where: { id } });
+    const budget = this.budgetRepository.findOne({
+      where: { id },
+      relations: { category: true },
+    });
+
+    if (!budget) {
+      throw new NotFoundException(`Budget ${id} not found`);
+    }
+
+    return budget;
   }
 
   async update(id: string, updateBudgetDto: UpdateBudgetDto): Promise<Budget> {
-    const budget = await this.repository.preload({
+    const budget = await this.budgetRepository.preload({
       id: id,
-      ...updateBudgetDto,
+      isActive: updateBudgetDto.isActive,
+      category: updateBudgetDto.category,
     });
+
     if (!budget) {
-      throw new NotFoundException(`Item ${id} not found`);
+      throw new NotFoundException(`Budget ${id} not found`);
     }
-    return this.repository.save(budget);
+
+    return this.budgetRepository.save(budget);
   }
 
-  async remove(id: string) {
+  async remove(id: string): Promise<string> {
     const budget = await this.findOne(id);
+<<<<<<< HEAD
     this.repository.remove(budget);
+=======
+
+    if (!budget) {
+      throw new NotFoundException(`Budget ${id} not found`);
+    }
+
+    this.budgetRepository.remove(budget);
+>>>>>>> 8d76e4b4386b619a8954b9f426b26416b049d325
 
     return 'Budget deleted!';
   }
