@@ -37,6 +37,8 @@ export class BudgetService {
 
   async remove(id: string) {
     const budget = await this.findOne(id);
-    return this.repository.remove(budget);
+    this.repository.remove(budget);
+
+    return 'Budget deleted!';
   }
 }
