@@ -54,16 +54,12 @@ export class BudgetService {
 
   async remove(id: string): Promise<string> {
     const budget = await this.findOne(id);
-<<<<<<< HEAD
-    this.repository.remove(budget);
-=======
 
     if (!budget) {
       throw new NotFoundException(`Budget ${id} not found`);
     }
 
     this.budgetRepository.remove(budget);
->>>>>>> 8d76e4b4386b619a8954b9f426b26416b049d325
 
     return 'Budget deleted!';
   }

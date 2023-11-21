@@ -11,6 +11,29 @@ import {
 } from 'typeorm';
 import { Category } from 'src/categories/entities/category.entity';
 
+export enum MonthType {
+  JANEIRO = 'Janeiro',
+  FEVEREIRO = 'Fevereiro',
+  MARCO = 'Março',
+  ABRIL = 'Abril',
+  MAIO = 'Maio',
+  JUNHO = 'Junho',
+  JULHO = 'Julho',
+  AGOSTO = 'Agosto',
+  SETEMBRO = 'Setembro',
+  OUTUBRO = 'Outubro',
+  NOVEMBRO = 'Novembro',
+  DEZEMBRO = 'Dezembro',
+}
+
+export enum StatusType {
+  PENDENTE = 'Pendente',
+  EM_ATRASO = 'Em atraso',
+  PAGO = 'Pago',
+  RECEBIDO = 'Recebido',
+  CANCELADO = 'Cancelado',
+}
+
 export enum BudgetType {
   RECEITA = 'Receita',
   DESPESA = 'Despesa',
@@ -24,11 +47,36 @@ export class Budget extends BaseEntity {
   @Column({ name: 'name', type: 'varchar', default: '' })
   name: string;
 
-  @Column({ name: 'description', type: 'varchar', length: 50 })
+  @Column({ name: 'description', type: 'varchar', length: 50, nullable: true })
   description: string;
 
   @Column({ name: 'value', type: 'decimal', scale: 2 })
   value: number;
+
+  @Column({
+    type: 'enum',
+    enum: MonthType,
+  })
+  month: MonthType;
+
+  @Column({
+    name: 'expected_payment_date',
+    type: 'timestamptz',
+  })
+  expectedPaymentDate: Date;
+
+  @Column({
+    name: 'effective_payment_date',
+    type: 'timestamptz',
+  })
+  effectivePaymentDate: Date;
+
+  @Column({
+    type: 'enum',
+    enum: StatusType,
+    default: StatusType.PENDENTE,
+  })
+  status: StatusType;
 
   @Column({
     type: 'enum',
